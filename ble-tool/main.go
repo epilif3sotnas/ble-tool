@@ -31,17 +31,24 @@ func main() {
 	bleHandler := bluetooth.NewBleHandler()
 	bleHandler.Enable()
 
-	switch strings.Split(ctx.Command(), " ")[0] {
+	cmd := strings.Split(ctx.Command(), " ")[0]
+
+	switch cmd {
 		case "scan":
 			scanSettings := cli.GetScanSettings()
 			go bleHandler.Scan(scanSettings)
 
-			for {}
-
 		case "advertise":
 			advertsiementSettings, _ := cli.GetAdvertisementsSettings(ctx)
 			go bleHandler.Advertise(advertsiementSettings)
+	}
 
+	// Maintain main Thread active for commands that use goroutines
+	switch cmd {
+		case "version":
+			break
+
+		default:
 			for {}
 	}
 }
